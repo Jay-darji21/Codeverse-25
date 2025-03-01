@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { User } from "./user.model.js";
 
 
+
 // Project schema
 const projectSchema = new mongoose.Schema({
   projectName: {
@@ -39,6 +40,12 @@ const projectSchema = new mongoose.Schema({
   reviews: [
     {
         type: String,
+    }
+  ],
+  bids : [
+    {
+      type : mongoose.Schema.Types.ObjectId,
+      ref : 'Bid'
     }
   ]
 },{timestamps:true});

@@ -87,13 +87,15 @@ export const loginUser = async (req, res) => {
     });
   }
 
+  
   const tokenData = {
     userId: user._id,
   };
+  
 
-  const token = await jwt.sign(tokenData, process.env.SECRET_KEY, {
-    expiresIn: "1d",
-  });
+  const token = jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: '1d' });
+
+  
 
   user = {
     userId: user._id,
@@ -118,3 +120,66 @@ export const loginUser = async (req, res) => {
       success: true,
     });
 };
+
+// Logout user
+
+export const logout = async (req,res) => {
+  try {
+    
+    return res.status(200).cookie("token","",{maxAge : 0}).json({
+      message : "Logout successfully",
+      success : true
+    })    
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+// Update user
+
+export const updateUser = async (req,res) => {
+  const { firstName , lastName, email, phoneNumber, bio, skills } = req.body;
+
+  let skillArray;
+  if(skills){
+    skillArray = skills.split(",");
+  }
+
+  const userId = req.userId;
+
+  let user = await User.findById(userId);
+
+  if(!user){
+    return res.status(400).json({
+      message : "User not exist",
+      success : false
+    })
+  }
+
+  // Update data
+  if(firstName) user.firstName = firstName;
+  if(lastName) user.lastName = lastName;
+  if(email) user.email = email;
+  if(phoneNumber) user.phoneNumber = phoneNumber;
+  if(bio) user.profile.bio = bio;
+  if(skills) user.profile.skills = skillArray;
+
+  await user.save();
+
+  user = {
+    _id : user._id,
+    firstName : user.firstName,
+    lastName : user.lastName,
+    email : user.email,
+    phoneNumber : user.phoneNumber,
+    bio : user.profile.bio,
+    skills : user.profile.skills
+  }
+
+  return res.status(200).json({
+    message : "User updated successfully",
+    user,
+    success : true
+  })
+
+}

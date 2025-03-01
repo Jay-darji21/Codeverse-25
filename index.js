@@ -4,6 +4,9 @@ import express, { urlencoded } from "express";
 import cors from 'cors';
 import dotenv from 'dotenv'
 import userRoutes from "./Routes/user.routes.js"
+import projectRoutes from "./Routes/project.routes.js"
+import bidsRoutes from "./Routes/bids.routes.js"
+import clientRoutes from "./Routes/clientProject.routes.js"
 import connectDb from "./Utils/db.js";
 dotenv.config()
 
@@ -28,6 +31,9 @@ app.use(session({
 
 // Api's
 app.use("/api/v1/user",userRoutes);  
+app.use("/api/v1/project",projectRoutes);
+app.use("/api/v1/bids",bidsRoutes);
+app.use("/api/v1/client",clientRoutes);
 
 // Server
 const PORT = 3535;
